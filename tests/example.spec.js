@@ -1,19 +1,29 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { HomePage } from '../pages/HomePage';
+import { GetStartedPage } from '../pages/GetStartedPage';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe('Playwright website', () => {
+  let homePage;
+  let getStartedPage;
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+  test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    getStartedPage = new GetStartedPage(page);
+  });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  test('has title', async () => {
+    await homePage.goto();
+    const hasCorrectTitle = await homePage.hasTitle(/Playwright/);
+    expect(hasCorrectTitle).toBeTruthy();
+  });
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  test('get started link', async () => {
+    await homePage.goto();
+    await homePage.clickGetStarted();
+    // Add a small wait to ensure page transition is complete
+    await getStartedPage.page.waitForLoadState('networkidle');
+    const isVisible = await getStartedPage.isInstallationHeadingVisible();
+    expect(isVisible).toBeTruthy();
+  });
 });
