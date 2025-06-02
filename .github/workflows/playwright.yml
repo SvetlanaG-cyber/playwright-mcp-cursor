@@ -48,7 +48,7 @@ jobs:
       uses: daun/playwright-report-summary@v3
       if: always()
       with:
-        report-file: test-results/results.json
+        report-file: playwright-report/results.json 
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Allure CLI
