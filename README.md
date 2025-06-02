@@ -172,3 +172,7 @@ npx playwright --version
 - Follow the Page Object Model pattern
 - Use appropriate assertions
 - Handle timeouts and waits properly
+
+## Test summary
+
+-https://github.com/daun/playwright-report-summary/blob/main/README.md
