@@ -8,6 +8,7 @@ permissions:
   pull-requests: write
   checks: write
   pages: write
+  id-token: write
 
 jobs:
   test:
@@ -20,7 +21,9 @@ jobs:
         node-version: 18
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm ci
+        npm install -D @playwright/test allure-playwright
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
@@ -48,14 +51,32 @@ jobs:
       uses: daun/playwright-report-summary@v3
       if: always()
       with:
-        report-file: playwright-report/results.json 
+        report-file: test-results/results.json
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Allure CLI
-      run: npm install -g allure-commandline
+      run: |
+        npm install -g allure-commandline
+        npm install -g allure-playwright
+
+    - name: Create Allure Results Directory
+      run: mkdir -p allure-results
+      if: always()
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
+      if: always()
+
+    - name: Create gh-pages branch
+      run: |
+        git checkout --orphan gh-pages || true
+        git reset --hard || true
+        git commit --allow-empty -m "Initial gh-pages commit" || true
+        git checkout main
+      continue-on-error: true
+
+    - name: Generate Allure Report
+      run: allure generate --clean
       if: always()
 
     - name: Get Allure history
@@ -65,10 +86,6 @@ jobs:
       with:
         ref: gh-pages
         path: gh-pages
-
-    - name: Generate Allure Report
-      run: npx allure generate allure-results --clean
-      if: always()
 
     - name: Allure Report with history
       uses: simple-elf/allure-report-action@v1.9
@@ -85,3 +102,5 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
         publish_dir: allure-history
+        force_orphan: true
+        commit_message: "docs: update allure report"

@@ -176,3 +176,6 @@ npx playwright --version
 ## Test summary
 
 -https://github.com/daun/playwright-report-summary/blob/main/README.md
+
+## Allure 
+-  npm install -D @playwright/test allure-playwright
