@@ -1,7 +1,7 @@
 {
   "name": "playwright-mcp-cursor",
   "version": "1.0.0",
-  "description": "",
+  "description": "This project contains automated tests using Playwright with Page Object Model pattern.",
   "main": "index.js",
   "scripts": {
     "test": "playwright test"
@@ -13,5 +13,19 @@
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.3",
     "allure-playwright": "^3.2.2"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "allure-js-commons": "^3.2.2",
+    "charenc": "^0.0.2",
+    "crypt": "^0.0.2",
+    "fsevents": "^2.3.2",
+    "is-buffer": "^1.1.6",
+    "md5": "^2.3.0",
+    "playwright": "^1.52.0",
+    "playwright-core": "^1.52.0",
+    "undici-types": "^6.21.0"
   }
 }
