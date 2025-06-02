@@ -13,19 +13,19 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-        
-    - name: Add Playwright report to pull request
-      uses: daun/playwright-report-summary@v3
-      if: always()
-      with:
-        report-file: results.json
-
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+
+    - name: Add Playwright report to pull request
+      uses: daun/playwright-report-summary@v3
+      if: always()
+      with:
+        report-file: results.json
+        
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
