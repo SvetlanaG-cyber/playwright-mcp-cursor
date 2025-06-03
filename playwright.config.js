@@ -28,7 +28,7 @@ export default defineConfig({
   //reporter: 'html',
   reporter: [
     ['html'],
-    ['json', { outputFile: 'test-results/results.json' }],
+    ['json', { outputFile: 'playwright-report/results.json' }],
     ['allure-playwright', {
       detail: false,
       suiteTitle: false,

@@ -26,4 +26,14 @@ test.describe('Playwright website', () => {
     const isVisible = await getStartedPage.isInstallationHeadingVisible();
     expect(isVisible).toBeTruthy();
   });
+
+  test.skip('should be skipped for test summary', async ({ page }) => {
+
+    expect(2 + 2).toBe(44);
+  });
+
+  test('should fail for test summary', async ({ page }) => {
+    expect(2 + 2).toBe(5);
+  });
+
 });
