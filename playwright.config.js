@@ -1,10 +1,12 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import * as os from "os";
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
+//require('dotenv').config();
 // import dotenv from 'dotenv';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -27,7 +29,22 @@ export default defineConfig({
   reporter: [
     ['html'],
     ['json', { outputFile: 'test-results/results.json' }],
-    ['allure-playwright']
+    ['allure-playwright', {
+      detail: false,
+      suiteTitle: false,
+      categories: [
+        {
+          name: "Outdated tests",
+          messageRegex: ".*FileNotFound.*",
+        },
+      ],
+      environmentInfo: {
+        os_platform: os.platform(),
+        os_release: os.release(),
+        os_version: os.version(),
+        node_version: process.version,
+      },
+    }]
   ],
   outputDir: 'test-results',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
