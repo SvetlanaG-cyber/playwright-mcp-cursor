@@ -60,11 +60,14 @@ jobs:
         report-file: test-results/results.json
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Generate Allure Report
+   - name: Generate Allure Report
       if: always()
       run: |
         npm install -g allure-commandline
         allure generate allure-results -o allure-report --clean
+
+    - name: List Allure Report Directory
+      run: ls -l allure-report
 
     - name: Deploy report to Github Pages
       if: always()
