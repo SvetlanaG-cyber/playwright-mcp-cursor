@@ -1,70 +1,181 @@
-# playwright-mcp-cursor
-Here's how to install and set up Playwright for testing:
+# Playwright Test Automation Project
 
-1. **Create a new Node.js project** (if you don't have one):
+This project contains automated tests using Playwright with Page Object Model pattern.
+
+## Prerequisites
+
+- Node.js (latest LTS version recommended)
+- npm (comes with Node.js)
+
+## Setup
+
+1. Install dependencies:
 ```bash
-mkdir playwright-project
-cd playwright-project
-npm init -y
+npm install
 ```
 
-2. **Install Playwright** using npm:
+2. Install Playwright browsers:
 ```bash
-npm init playwright@latest
+npx playwright install
 ```
 
-During the installation, you'll be prompted with several questions:
-- Choose between TypeScript/JavaScript
-- Name of your tests folder
-- Whether to add GitHub Actions workflow
-- Whether to install Playwright browsers (Chrome, Firefox, WebKit)
+## Available Commands
 
-3. **The installation will create**:
-- `playwright.config.ts` (or `.js`) - configuration file
-- `tests` directory with example test
-- `.github/workflows` (if selected) - GitHub Actions setup
-- Add necessary dependencies to package.json
+### Running Tests
 
-4. **Verify installation** by running the example test:
+1. Run all tests in headless mode:
 ```bash
 npx playwright test
 ```
 
-5. **Show test report** (after running tests):
+2. Run tests in UI mode (with visual interface):
+```bash
+npx playwright test --ui
+```
+
+3. Run tests with HTML report:
+```bash
+npx playwright test --reporter=html
+```
+
+4. Show the HTML report after test run:
 ```bash
 npx playwright show-report
 ```
 
-**Key files created**:
-````typescript
-import { defineConfig, devices } from '@playwright/test';
+### Running Tests in Specific Browsers
 
-export default defineConfig({
-  testDir: './tests',
-  timeout: 30 * 1000,
-  expect: {
-    timeout: 5000
-  },
-  reporter: 'html',
-  use: {
-    baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
-  },
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    // Add other browsers as needed
-  ],
-});
-````
+1. Run tests only in Chromium:
+```bash
+npx playwright test --project=chromium
+```
 
-**Additional Tips**:
-- Use `npx playwright codegen` to record and generate tests
-- Use `npx playwright test --debug` for debugging tests
-- Install VS Code Playwright extension for better testing experience
+2. Run tests only in Firefox:
+```bash
+npx playwright test --project=firefox
+```
 
-Would you like to create a sample test or need help with any specific testing scenario?
+3. Run tests only in WebKit:
+```bash
+npx playwright test --project=webkit
+```
 
-Similar code found with 1 license type
+### Debugging
+
+1. Run tests in debug mode:
+```bash
+npx playwright test --debug
+```
+
+2. Run a specific test file:
+```bash
+npx playwright test example.spec.js
+```
+
+3. Run tests with headed browsers (visible browser windows):
+```bash
+npx playwright test --headed
+```
+
+### Test Generation
+
+Generate tests by recording your actions:
+```bash
+npx playwright codegen playwright.dev
+```
+
+### Other Useful Commands
+
+1. Update Playwright:
+```bash
+npm install -D @playwright/test@latest
+```
+
+2. Run tests with retry on failure:
+```bash
+npx playwright test --retries=3
+```
+
+3. Run tests in parallel:
+```bash
+npx playwright test --workers=4
+```
+
+## Project Structure
+
+```
+playwright-mcp-cursor/
+├── pages/              # Page Object Model classes
+│   ├── BasePage.js     # Base page with common functionality
+│   ├── HomePage.js     # Home page specific actions
+│   └── GetStartedPage.js  # Getting Started page actions
+├── tests/              # Test files
+│   └── example.spec.js # Example test suite
+└── playwright.config.js # Playwright configuration
+```
+
+## Running Tests in Different Environments
+
+To run tests against different environments, you can use the `--project` flag with different configurations:
+
+```bash
+# Run tests against staging
+npx playwright test --project=staging
+
+# Run tests against production
+npx playwright test --project=production
+```
+
+## Generating and Viewing Test Reports
+
+1. Run tests with all reporters:
+```bash
+npx playwright test --reporter=list,html,junit
+```
+
+2. View the last HTML report:
+```bash
+npx playwright show-report
+```
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Clear Playwright browser cache:
+```bash
+npx playwright clear-browser-cache
+```
+
+2. Install/reinstall browsers:
+```bash
+npx playwright install --with-deps
+```
+
+3. Check Playwright version:
+```bash
+npx playwright --version
+```
+
+## Contributing
+
+1. Create a new branch for your changes
+2. Write or update tests
+3. Run all tests to ensure nothing is broken
+4. Submit a pull request
+
+## Best Practices
+
+- Keep page objects focused and maintainable
+- Use meaningful test and function names
+- Add proper comments and documentation
+- Follow the Page Object Model pattern
+- Use appropriate assertions
+- Handle timeouts and waits properly
+
+## Test summary
+
+-https://github.com/daun/playwright-report-summary/blob/main/README.md
+
+## Allure 
+-  npm install -D @playwright/test allure-playwright
