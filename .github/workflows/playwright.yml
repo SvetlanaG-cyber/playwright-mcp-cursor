@@ -2,6 +2,10 @@ name: Playwright Tests
 on:
   pull_request:
     branches: [ main ]
+
+  schedule:
+    - cron: '21 00 * * *'  # Runs daily at midnight UTC 4 pm pct
+  workflow_dispatch:  # Allows manual triggering of the workflow
 jobs:
   test:
     timeout-minutes: 60
@@ -61,3 +65,31 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
         publish_dir: allure-history
+
+    - name: Send Scheduled Run Summary to Slack
+      if: github.event_name == 'schedule'  # Only runs on scheduled events
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,commit,took
+        text: |
+          Daily Test Run Summary:
+          Status: ${{ job.status }}
+          Total Tests: ${{ steps.test-results.outputs.total }}
+          Passed: ${{ steps.test-results.outputs.passed }}
+          Failed: ${{ steps.test-results.outputs.failed }}
+          View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+    # Place this step before the Slack notification to get test results
+    - name: Get Test Results
+      if: github.event_name == 'schedule'
+      id: test-results
+      run: |
+        TOTAL=$(grep -r "test" playwright-report/results.json | wc -l)
+        PASSED=$(grep -r "passed" playwright-report/results.json | wc -l)
+        FAILED=$(grep -r "failed" playwright-report/results.json | wc -l)
+        echo "total=$TOTAL" >> $GITHUB_OUTPUT
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
