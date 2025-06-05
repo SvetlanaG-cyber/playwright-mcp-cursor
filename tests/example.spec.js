@@ -12,13 +12,13 @@ test.describe('Playwright website', () => {
     getStartedPage = new GetStartedPage(page);
   });
 
-  test('has title', async () => {
+  test('TC_001 has title', async () => {
     await homePage.goto();
     const hasCorrectTitle = await homePage.hasTitle(/Playwright/);
     expect(hasCorrectTitle).toBeTruthy();
   });
 
-  test('get started link', async () => {
+  test('TC_002 get started link', async () => {
     await homePage.goto();
     await homePage.clickGetStarted();
     // Add a small wait to ensure page transition is complete
@@ -27,12 +27,12 @@ test.describe('Playwright website', () => {
     expect(isVisible).toBeTruthy();
   });
 
-  test.skip('should be skipped for test summary', async ({ page }) => {
+  test.skip('TC_003 should be skipped for test summary', async ({ page }) => {
 
     expect(2 + 2).toBe(44);
   });
 
-  test('should fail for test summary', async ({ page }) => {
+  test.skip('TC_004 should fail for test summary', async ({ page }) => {
     expect(2 + 2).toBe(5);
   });
 
