@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '21 20 * * *'  # Runs daily at midnight UTC 4 pm pct
+    - cron: '21 00 * * *'  # Runs daily at midnight UTC 4 pm pct
   workflow_dispatch:
 
 permissions:
@@ -13,8 +13,6 @@ permissions:
   deployments: write
   checks: write
   pull-requests: write
-  actions: write
-  statuses: write
 
 jobs:
   test:
@@ -26,9 +24,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: 18
 
@@ -36,7 +32,6 @@ jobs:
       run: |
         npm ci --no-optional
         npm install -D @playwright/test allure-playwright
-        npm install -g allure-commandline
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
@@ -49,44 +44,29 @@ jobs:
         mkdir -p allure-report
 
     - name: Run Playwright tests
-      run: |
-        npx playwright test --reporter=list,html,json,allure-playwright
+      run: npx playwright test
       continue-on-error: true
-      env:
-        PLAYWRIGHT_JSON_OUTPUT_NAME: test-results/results.json
-        ALLURE_RESULTS_DIR: allure-results
 
-    - name: Configure GitHub Pages
+    - name: Setup Pages
+      id: pages
       uses: actions/configure-pages@v4
       with:
-        static_site_generator: "null"
         enablement: true
 
     - name: Add Playwright report to pull request
-      if: always()
       uses: daun/playwright-report-summary@v3
+      if: always()
       with:
         report-file: test-results/results.json
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        create-comment: true
 
     - name: Generate Allure Report
       if: always()
       run: |
+        npm install -g allure-commandline
         allure generate allure-results -o allure-report --clean
 
-    - name: Upload Artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: |
-          test-results/
-          playwright-report/
-          allure-report/
-        retention-days: 30
-
-    - name: Deploy to GitHub Pages
+    - name: Deploy report to Github Pages
       if: always()
       uses: peaceiris/actions-gh-pages@v4
       with:
@@ -94,9 +74,18 @@ jobs:
         publish_branch: gh-pages
         publish_dir: allure-report
         force_orphan: true
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        commit_message: 'docs: update test report [skip ci]'
+        keep_files: false
+        commit_message: "docs: update test report [skip ci]"
+
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: |
+          playwright-report/
+          test-results/
+          allure-report/
+        retention-days: 30
 
     - name: Send Scheduled Run Summary to Slack
       if: github.event_name == 'schedule'
