@@ -51,10 +51,12 @@ jobs:
 
       - name: Setup Git Remote
         run: |
-          REMOTE_EXISTS=$(git remote | grep -q 'origin'; echo $?)
-          if [[ $REMOTE_EXISTS -eq 0 ]]; then
+          # Check if 'origin' remote exists
+          if git remote -v | grep -q '^origin'; then
+            echo "Removing existing 'origin' remote."
             git remote rm origin
           fi
+          echo "Adding 'origin' remote."
           git remote add origin https://github.com/${{ github.repository }}
           git fetch origin
 
