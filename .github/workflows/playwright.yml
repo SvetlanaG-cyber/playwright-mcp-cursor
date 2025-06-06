@@ -36,8 +36,6 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
 
       - name: Create directories
         run: |
@@ -53,9 +51,10 @@ jobs:
 
       - name: Setup Git Remote
         run: |
-          if ! git remote | grep -q 'origin'; then
-            git remote add origin https://github.com/${{ github.repository }}
+          if git remote | grep -q 'origin'; then
+            git remote rm origin
           fi
+          git remote add origin https://github.com/${{ github.repository }}
           git fetch origin
 
       - name: Setup Pages
@@ -91,7 +90,7 @@ jobs:
           keep_files: false
           commit_message: "docs: update test report [skip ci]"
         env:
-          DEBUG_ACTIONS: "true" # Enables debug output for troubleshooting
+          DEBUG_ACTIONS: "true"
 
       - name: Upload Playwright and Allure Reports
         if: always()
