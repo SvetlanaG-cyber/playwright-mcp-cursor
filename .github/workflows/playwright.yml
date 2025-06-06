@@ -49,6 +49,11 @@ jobs:
           npx playwright test 
         continue-on-error: true
 
+      - name: Setup Git config
+        run: |
+          git remote rm origin || true
+          git remote add origin https://github.com/${{ github.repository }}
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
@@ -61,7 +66,7 @@ jobs:
         if: always()
         with:
           report-file: test-results/results.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Allure Report
         if: always()
