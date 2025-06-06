@@ -49,6 +49,11 @@ jobs:
         run: npx playwright test --reporter=json --output=test-results
         continue-on-error: true
 
+      - name: Setup Git Remote
+        run: |
+          git remote add origin https://github.com/${{ github.repository }}
+          git fetch origin
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
