@@ -109,23 +109,12 @@ jobs:
       - name: Extract Test Results
         id: test-results
         run: |
-          # Get unique test ids and their final status
-          jq -r '
-            [
-              .suites[].specs[].tests[] |
-              { id: .testId, status: (.results[-1].status) }
-            ] | unique_by(.id)
-          ' test-results/results.json > test-statuses.json
-
-          total=$(jq 'length' test-statuses.json)
-          passed=$(jq '[.[] | select(.status == "passed")] | length' test-statuses.json)
-          failed=$(jq '[.[] | select(.status == "failed")] | length' test-statuses.json)
-          skipped=$(jq '[.[] | select(.status == "skipped")] | length' test-statuses.json)
-
+          total=$(jq '[.. | .status? | select(. == "passed" or . == "failed")] | length' test-results/results.json)
+          passed=$(jq '[.. | .status? | select(. == "passed")] | length' test-results/results.json)
+          failed=$(jq '[.. | .status? | select(. == "failed")] | length' test-results/results.json)
           echo "total=$total" >> $GITHUB_OUTPUT
           echo "passed=$passed" >> $GITHUB_OUTPUT
           echo "failed=$failed" >> $GITHUB_OUTPUT
-          echo "skipped=$skipped" >> $GITHUB_OUTPUT
 
       - name: Send Scheduled Run Summary to Slack
         # if: github.event_name == 'schedule'
@@ -139,7 +128,6 @@ jobs:
             Total Tests: ${{ steps.test-results.outputs.total }}
             Passed: ${{ steps.test-results.outputs.passed }}
             Failed: ${{ steps.test-results.outputs.failed }}
-            Skipped: ${{ steps.test-results.outputs.skipped }}
             View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
