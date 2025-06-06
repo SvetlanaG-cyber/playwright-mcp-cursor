@@ -49,17 +49,6 @@ jobs:
           npx playwright test 
         continue-on-error: true
 
-      - name: Setup Git Remote
-        run: |
-          # Check if 'origin' remote exists
-          if git remote -v | grep -q '^origin'; then
-            echo "Removing existing 'origin' remote."
-            git remote rm origin
-          fi
-          echo "Adding 'origin' remote."
-          git remote add origin https://github.com/${{ github.repository }}
-          git fetch origin
-
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
