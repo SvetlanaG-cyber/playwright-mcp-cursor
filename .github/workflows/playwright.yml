@@ -109,9 +109,9 @@ jobs:
       - name: Extract Test Results
         id: test-results
         run: |
-          total=$(jq '.suites | map(.specs | length) | add' test-results/results.json)
-          passed=$(jq '[.suites[].specs[] | select(.tests[]?.outcome == "expected")] | length' test-results/results.json)
-          failed=$(jq '[.suites[].specs[] | select(.tests[]?.outcome == "unexpected")] | length' test-results/results.json)
+          total=$(jq '[.. | .status? | select(.) ] | length' test-results/results.json)
+          passed=$(jq '[.. | .status? | select(. == "passed") ] | length' test-results/results.json)
+          failed=$(jq '[.. | .status? | select(. == "failed") ] | length' test-results/results.json)
           echo "total=$total" >> $GITHUB_OUTPUT
           echo "passed=$passed" >> $GITHUB_OUTPUT
           echo "failed=$failed" >> $GITHUB_OUTPUT
