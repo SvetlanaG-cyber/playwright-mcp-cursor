@@ -20,92 +20,91 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    #environment:
-     # name: github-pages
-      #url: ${{ steps.deployment.outputs.page_url }}
+    # environment:
+    #   name: github-pages
+    #   url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-    - name: Install dependencies
-      run: |
-        npm ci --no-optional
-        npm install -D @playwright/test allure-playwright
+      - name: Install dependencies
+        run: |
+          npm ci --no-optional
+          npm install -D @playwright/test allure-playwright
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
-    - name: Create directories
-      run: |
-        mkdir -p test-results
-        mkdir -p playwright-report
-        mkdir -p allure-results
-        mkdir -p allure-report
+      - name: Create directories
+        run: |
+          mkdir -p test-results
+          mkdir -p playwright-report
+          mkdir -p allure-results
+          mkdir -p allure-report
 
-    - name: Run Playwright tests
-      run: npx playwright test
-      continue-on-error: true
+      - name: Run Playwright tests
+        run: npx playwright test
+        continue-on-error: true
 
-    - name: Setup Pages
-      id: pages
-      uses: actions/configure-pages@v4
-      with:
-        enablement: true
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
 
-    - name: Add Playwright report to pull request
-      uses: daun/playwright-report-summary@v3
-      if: always()
-      with:
-        report-file: test-results/results.json
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add Playwright report to pull request
+        uses: daun/playwright-report-summary@v3
+        if: always()
+        with:
+          report-file: test-results/results.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-   - name: Generate Allure Report
-      if: always()
-      run: |
-        npm install -g allure-commandline
-        allure generate allure-results -o allure-report --clean
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          npm install -g allure-commandline
+          allure generate allure-results -o allure-report --clean
 
-    - name: List Allure Report Directory
-      run: ls -l allure-report
+      - name: List Allure Report Directory
+        run: ls -l allure-report
 
-    - name: Deploy report to Github Pages
-      if: always()
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: allure-report
-        force_orphan: true
-        keep_files: false
-        commit_message: "docs: update test report [skip ci]"
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report
+          force_orphan: true
+          keep_files: false
+          commit_message: "docs: update test report [skip ci]"
 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: |
-          playwright-report/
-          test-results/
-          allure-report/
-        retention-days: 30
+      - name: Upload Playwright and Allure Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+            allure-report/
+          retention-days: 30
 
-    - name: Send Scheduled Run Summary to Slack
-
-     # if: github.event_name == 'schedule'
-
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,commit,took
-        text: |
-          Daily Test Run Summary:
-          Status: ${{ job.status }}
-          Total Tests: ${{ steps.test-results.outputs.total }}
-          Passed: ${{ steps.test-results.outputs.passed }}
-          Failed: ${{ steps.test-results.outputs.failed }}
-          View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Send Scheduled Run Summary to Slack
+        # if: github.event_name == 'schedule'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,commit,took
+          text: |
+            Daily Test Run Summary:
+            Status: ${{ job.status }}
+            Total Tests: ${{ steps.test-results.outputs.total }}
+            Passed: ${{ steps.test-results.outputs.passed }}
+            Failed: ${{ steps.test-results.outputs.failed }}
+            View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
