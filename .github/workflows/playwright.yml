@@ -81,6 +81,13 @@ jobs:
       - name: List Allure Report Directory
         run: ls -l allure-report
 
+      - name: Verify Allure Report Directory
+        run: |
+          if [ ! -d allure-report ] || [ -z "$(ls -A allure-report)" ]; then
+            echo "Allure report directory is empty or does not exist."
+            exit 1
+          fi
+
       - name: Deploy report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
