@@ -29,7 +29,7 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html'],
-    ['json', { outputFile: 'playwright-report/results.json' }],
+    ['json', { outputFile: 'test-results/results.json' }],
     ['allure-playwright', {
       detail: false,
       outputFolder: 'allure-results',
