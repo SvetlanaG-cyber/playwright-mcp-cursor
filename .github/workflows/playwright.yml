@@ -91,6 +91,8 @@ jobs:
           force_orphan: true
           keep_files: false
           commit_message: "docs: update test report [skip ci]"
+        env:
+          DEBUG_ACTIONS: "true" # Enables debug output for troubleshooting
 
       - name: Upload Playwright and Allure Reports
         if: always()
