@@ -106,6 +106,16 @@ jobs:
             allure-report/
           retention-days: 30
 
+      - name: Extract Test Results
+        id: test-results
+        run: |
+          total=$(jq '.suites | map(.specs | length) | add' test-results/results.json)
+          passed=$(jq '[.suites[].specs[] | select(.tests[]?.outcome == "expected")] | length' test-results/results.json)
+          failed=$(jq '[.suites[].specs[] | select(.tests[]?.outcome == "unexpected")] | length' test-results/results.json)
+          echo "total=$total" >> $GITHUB_OUTPUT
+          echo "passed=$passed" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+
       - name: Send Scheduled Run Summary to Slack
         # if: github.event_name == 'schedule'
         uses: 8398a7/action-slack@v3
