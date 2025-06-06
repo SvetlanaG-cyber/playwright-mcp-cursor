@@ -81,7 +81,7 @@ jobs:
       - name: List Allure Report Directory
         run: ls -l allure-report
 
-      - name: Deploy report to Github Pages
+      - name: Deploy report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
