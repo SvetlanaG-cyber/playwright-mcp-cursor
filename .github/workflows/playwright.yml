@@ -120,7 +120,7 @@ jobs:
             Failed: ${{ steps.test-results.outputs.failed }}
             View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Debug Info
         run: env
