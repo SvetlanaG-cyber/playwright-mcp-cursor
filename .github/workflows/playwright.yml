@@ -51,7 +51,8 @@ jobs:
 
       - name: Setup Git Remote
         run: |
-          if git remote | grep -q 'origin'; then
+          REMOTE_EXISTS=$(git remote | grep -q 'origin'; echo $?)
+          if [[ $REMOTE_EXISTS -eq 0 ]]; then
             git remote rm origin
           fi
           git remote add origin https://github.com/${{ github.repository }}
@@ -62,6 +63,7 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           enablement: true
+        continue-on-error: true
 
       - name: Add Playwright report to pull request
         uses: daun/playwright-report-summary@v3
@@ -91,6 +93,7 @@ jobs:
           commit_message: "docs: update test report [skip ci]"
         env:
           DEBUG_ACTIONS: "true"
+        continue-on-error: true
 
       - name: Upload Playwright and Allure Reports
         if: always()
@@ -118,3 +121,6 @@ jobs:
             View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Debug Info
+        run: env
