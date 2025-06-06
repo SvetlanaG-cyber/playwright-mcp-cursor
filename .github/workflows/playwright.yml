@@ -48,8 +48,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          npx playwright test --reporter=json --output=test-results || echo "Playwright tests failed."
-          ls -l test-results || echo "test-results directory not found or empty."
+          npx playwright test 
         continue-on-error: true
 
       - name: Setup Git Remote
