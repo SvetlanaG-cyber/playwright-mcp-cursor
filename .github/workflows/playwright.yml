@@ -31,8 +31,11 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm ci --no-optional || echo "Dependency installation failed. Check logs for details."
-
+        #run: npm ci --omit=optional || echo "Dependency installation failed. Check logs for details."
+      
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
@@ -51,7 +54,7 @@ jobs:
 
       - name: Setup Git Remote
         run: |
-          git remote add origin https://github.com/${{ github.repository }}
+          git remote | grep -q 'origin' || git remote add origin https://github.com/${{ github.repository }}
           git fetch origin
 
       - name: Setup Pages
