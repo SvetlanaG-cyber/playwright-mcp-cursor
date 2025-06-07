@@ -49,10 +49,14 @@ jobs:
           npx playwright test 
         continue-on-error: true
 
-      - name: Setup Git config
+      - name: Setup Git Remote
         run: |
-          git remote rm origin || true
+          REMOTE_EXISTS=$(git remote | grep -q 'origin'; echo $?)
+          if [[ $REMOTE_EXISTS -eq 0 ]]; then
+            git remote rm origin
+          fi
           git remote add origin https://github.com/${{ github.repository }}
+          git fetch origin
 
       - name: Setup Pages
         id: pages
