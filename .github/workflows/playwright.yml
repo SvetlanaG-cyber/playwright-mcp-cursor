@@ -64,13 +64,14 @@ jobs:
         with:
           enablement: true
         #continue-on-error: true
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Add Playwright report to pull request
         uses: daun/playwright-report-summary@v3
         if: always()
         with:
           report-file: test-results/results.json
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Allure Report
         if: always()
