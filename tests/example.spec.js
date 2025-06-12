@@ -32,7 +32,7 @@ test.describe('Playwright website', () => {
     expect(2 + 2).toBe(44);
   });
 
-  test.skip('TC_004 should fail for test summary', async ({ page }) => {
+  test('TC_004 should fail for test summary', async ({ page }) => {
     expect(2 + 2).toBe(5);
   });
 
