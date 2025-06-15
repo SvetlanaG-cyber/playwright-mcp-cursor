@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","1","TC_003 should be skipped for test summary","chromium","Sun Jun 15 02:33:02 UTC 2025","skipped","Sun Jun 15 02:33:02 UTC 2025","Playwright website","","",""
+"","323","TC_001 has title","chromium","Sun Jun 15 02:33:00 UTC 2025","passed","Sun Jun 15 02:33:00 UTC 2025","Playwright website","","",""
+"","97","TC_004 should fail for test summary","chromium","Sun Jun 15 02:33:03 UTC 2025","failed","Sun Jun 15 02:33:04 UTC 2025","Playwright website","","",""
+"","1169","TC_002 get started link","chromium","Sun Jun 15 02:33:01 UTC 2025","passed","Sun Jun 15 02:33:02 UTC 2025","Playwright website","","",""
